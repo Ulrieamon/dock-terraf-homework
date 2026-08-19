@@ -76,6 +76,11 @@ CMD ["jupyter", "notebook", "--ip=0.0.0.0", "--port=8888", "--no-browser", "--al
 
 ```
 
+**copy a token in jupyter log, you can see in this command :**
+
+`docker compose logs -f jupyter`
+
+
 ### 4. build a Docker image
 
 `docker build -t taxi-city .`
@@ -90,21 +95,111 @@ docker run -it --rm \
 ```
 ### 6. on Jupyter
 
-`[] : import pandas as pd`
-
-`df = pd.read_parquet("green_tripdata_2025-11.parquet")
-zone=pd.read_csv("taxi_zone_lookup.csv")`
-
-`[]: df.dtypes`
-
-`[]: zone.dtypes`
+`[] : import pandas as pd `
 
 `[]: pip install sqlalchemy`
 
-`[]: pip install psycopg2-binary`
+`[]: pip install psycopg2-binary `
 
+`[]: df = pd.read_parquet("green_tripdata_2025-11.parquet")
+     zone=pd.read_csv("taxi_zone_lookup.csv") `
+
+`[]: from sqlalchemy import create_engine
+    engine = create_engine("postgresql://postgres:postgres@db:5432/ny_taxi") `
+
+`[]: df.dtypes `
+
+`[]: zone.dtypes`
+
+`[] :  df.to_sql(
+    "green_tripdata",
+    engine,
+    if_exists="replace",
+    index=False)
+
+zone.to_sql(
+    "taxi_zone_lookup",
+    engine,
+    if_exists="replace",
+    index=False
+)
+
+### create a docker-compose files
+
+`# touch docker-compose.yml`
+
+In yml files put the docker compose script
+I will put a container taxi-city in the same network with postgresql. I add a Jupyter in the same docker-compose.yml
+```
+services:
+  db:
+    container_name: postgres
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ny_taxi
+    ports:
+      - "5433:5432"
+    volumes:
+      - vol-pgdata:/var/lib/postgresql/data
+
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4:latest
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "pgadmin@pgadmin.com"
+      PGADMIN_DEFAULT_PASSWORD: "pgadmin"
+    ports:
+      - "8080:80"
+    volumes:
+      - vol-pgadmin_data:/var/lib/pgadmin
+
+  jupyter:
+    container_name: taxi-city
+    build: .
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./datasource:/dataview
+
+volumes:
+  vol-pgdata:
+    name: vol-pgdata
+
+  vol-pgadmin_data:
+    name: vol-pgadmin_data
+```
+after 
+
+`#docker compose up -d`
+
+now the 2 docker a running in back
+
+### Launch PgAdmin in web browser
+`
+http://localhost:8080`
+
+**access to PgAdmin:** 
+user mail : pgadmin@pgadmin.com
+password: pgadmin
+
+**access to server:** 
+server: db
+port :5432
+user: postgres
+password: postgres
 
 
 # Question 3 . Counting short trips
+
+select 
+count(*) "number"
+from public.green_tripdata
+where lpep_pickup_datetime>='2025-11-01' and lpep_pickup_datetime<'2025-12-01'
+and trip_distance <= '1'
+
+
+
 
 
