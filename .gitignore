@@ -1,4 +1,42 @@
+# Data files
 datasource/*.parquet
+
+# Jupyter
 .ipynb_checkpoints/
+
+# Python cache
 __pycache__/
-*.pyc
+*.py[codz]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Environment variables
+.env
+
+# Ruff
+.ruff_cache/
+
+# Jupyter/IPython
+profile_default/
+ipython_config.py
+
+# Build / distribution
+build/
+dist/
+*.egg-info/
+
+# Test / coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# IDE
+.vscode/
+.idea/
+
+
