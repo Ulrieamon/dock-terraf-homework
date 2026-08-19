@@ -16,7 +16,7 @@ the answer is : `db:5433`
 
 # Prepare the Data
 
-I create a directory **~/Data-engineering/01-docker-terraform/docker-homework$** in my homework to download the files:
+### 1. I create a directory **~/Data-engineering/01-docker-terraform/docker-homework$** in my homework to download the files:
 
 ```
 # mkdir datasource
@@ -30,17 +30,16 @@ create a volume between my path **/datasource** and my container python:3.13.11-
 `# docker run -it --entrypoint=bash -v $(pwd)/datasource:/dataview python:3.13.11-slim`
 
 in container 
-`
-#ls
+
+`#ls
 bin  boot  dataview  dev  etc  home  lib  lib64  media	mnt  opt  proc	root  run  sbin  srv  sys  tmp	usr  var`
 
 `# cd dataview/
-green_tripdata_2025-11.parquet	taxi_zone_lookup.csv
-`
+green_tripdata_2025-11.parquet	taxi_zone_lookup.csv`
 
 `# cd ..`
 
-### Install pandas and pyarrow for data processing 
+### 2. Install pandas and pyarrow for data processing 
 ```
 # pip upgrade
 
@@ -50,23 +49,42 @@ green_tripdata_2025-11.parquet	taxi_zone_lookup.csv
 
 ```
 
-### Create a Dockerfile
+### 3. Create a Dockerfile
 
-I create a Dockerfile to create a docker image and import a dependancies
+I create a Dockerfile to create a docker image and import a dependencies
 
-# touch Dockerfile
+`/docker-homework$# touch Dockerfile`
 
-# vim Dockerfile
+`/docker-homework$# vim Dockerfile`
 
-in DOckerfile :
+in Dockerfile :
+
 ```
 FROM python:3.13.11-slim
 
 RUN pip install pandas pyarrow jupyter
 
-WORKDIR /app/datadock
+WORKDIR /dataview
+
+# jupyter accessibility of container
+EXPOSE 8888
+# run on container
+CMD ["jupyter", "notebook", "--ip=0.0.0.0", "--port=8888", "--no-browser", "--allow-root"]
+
 ```
 
+### 4. build a Docker image
+
+`docker build -t taxi-city .`
+
+### 5. Run a docker image taxi-city
+```
+docker run -it --rm \
+  --name taxi-city \
+  -p 8888:8888 \
+  -v /datasource:/dataview \
+  taxi-city
+```
 # Question 3 . Counting short trips
 
 
