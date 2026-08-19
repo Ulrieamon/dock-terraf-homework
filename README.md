@@ -31,23 +31,26 @@ create a volume between my path **/datasource** and my container python:3.13.11-
 
 in container 
 
-`#ls
-bin  boot  dataview  dev  etc  home  lib  lib64  media	mnt  opt  proc	root  run  sbin  srv  sys  tmp	usr  var`
+```
+#ls
+bin  boot  dataview  dev  etc  home  lib  lib64  media	mnt  opt  proc	root  run  sbin  srv  sys  tmp	usr  var
+```
 
-`# cd dataview/
-green_tripdata_2025-11.parquet	taxi_zone_lookup.csv`
+# cd dataview/
+green_tripdata_2025-11.parquet	taxi_zone_lookup.csv```
 
 `# cd ..`
 
 ### 2. Install pandas and pyarrow for data processing 
+
 ```
 # pip upgrade
 
 # pip install pandas pyarrow
 
 # pip install jupyter notebook
-
 ```
+
 
 ### 3. Create a Dockerfile
 
@@ -82,9 +85,26 @@ CMD ["jupyter", "notebook", "--ip=0.0.0.0", "--port=8888", "--no-browser", "--al
 docker run -it --rm \
   --name taxi-city \
   -p 8888:8888 \
-  -v /datasource:/dataview \
+  -v "$(pwd)/datasource:/dataview" \
   taxi-city
 ```
+### 6. on Jupyter
+
+`[] : import pandas as pd`
+
+`df = pd.read_parquet("green_tripdata_2025-11.parquet")
+zone=pd.read_csv("taxi_zone_lookup.csv")`
+
+`[]: df.dtypes`
+
+`[]: zone.dtypes`
+
+`[]: pip install sqlalchemy`
+
+`[]: pip install psycopg2-binary`
+
+
+
 # Question 3 . Counting short trips
 
 
