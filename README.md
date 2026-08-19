@@ -181,24 +181,75 @@ now the 2 docker a running in back
 http://localhost:8080`
 
 **access to PgAdmin:** 
+```
 user mail : pgadmin@pgadmin.com
 password: pgadmin
+```
 
 **access to server:** 
+```
 server: db
 port :5432
 user: postgres
 password: postgres
+```
 
-
-# Question 3 . Counting short trips
-
+# Question 3. Counting short trips
+```
 select 
 count(*) "number"
 from public.green_tripdata
 where lpep_pickup_datetime>='2025-11-01' and lpep_pickup_datetime<'2025-12-01'
 and trip_distance <= '1'
+```
+**Result  =  8,007**
 
+# Question 4. Longest trip for each day
+```
+select 
+lpep_pickup_datetime::date as pick_up_day ,
+Max(trip_distance) as distance
+from public.green_tripdata
+where trip_distance < 100
+group BY lpep_pickup_datetime::date
+order by distance desc
+limit 1
+```
+
+**Result = 2025-11-14**
+
+
+# Question 5. Biggest pickup zone
+```
+select 
+zl."Zone",
+SUM(gt.total_amount) total_amount
+from public.green_tripdata gt
+left join public.taxi_zone_lookup as zl on zl."LocationID"=gt."PULocationID"
+where lpep_pickup_datetime::date >= '2025-11-18' 
+and lpep_pickup_datetime::date < '2025-11-19'
+group by zl."Zone"
+order by total_amount desc
+```
+
+**Result = East Harlem North**
+
+# Question 6.
+```
+select 
+zd."Zone",
+MAX(gt.tip_amount) tip_amount
+from public.green_tripdata gt
+left join public.taxi_zone_lookup zp on gt."PULocationID"=zp."LocationID"
+left join public.taxi_zone_lookup zd on gt."DOLocationID"=zd."LocationID"
+where zp."Zone" = 'East Harlem North'
+and lpep_pickup_datetime>='2025-11-01' 
+and lpep_pickup_datetime<'2025-12-01'
+group by zd."Zone"
+order by tip_amount desc
+```
+
+**Result = Yorkville West**
 
 
 
