@@ -39,4 +39,7 @@ htmlcov/
 .vscode/
 .idea/
 
+#Terraform
 
+terraf-homwk/
+git rm -r --cached terraf-homwk/
