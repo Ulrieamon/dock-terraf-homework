@@ -252,5 +252,87 @@ order by tip_amount desc
 **Result = Yorkville West**
 
 
+# Question 7. Terraform
 
 
+Anwser :
+
+```
+ terraform init
+ terraform apply -auto-approve
+ terraform destroy**
+```
+
+I use terraform for AWS CLI on linux. at first :
+
+**I update a package and install a requise**
+
+`sudo apt-get update && sudo apt-get install -y gnupg software-properties-common wget`
+
+**Download and install the Hashicorp GPG key**
+
+`wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg`
+
+**Add a official hashicorp repo for Ubuntu**
+
+`echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list`
+
+
+**Update and install Terraform**
+
+`sudo apt-get update && sudo apt-get install -y terraform`
+
+**show the version of Terraform**
+```
+#terraform --version
+
+Terraform v1.15.9
+on linux_amd64
+```
+
+**Download a AWS CLI**
+
+`sudo apt install -y unzip curl`
+
+`curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"`
+
+**unzip and execute installation**
+
+```
+unzip awscliv2.zip
+
+sudo ./aws/install
+```
+
+**Show the version of AWS**
+```
+# aws --version
+aws-cli/2.36.28 Python/3.14.6 Linux/7.0.0-29-generic exe/x86_64.ubuntu.26
+```
+**Configure your AWS**
+
+`aws configure`
+
+after this command, put your access key in AWS
+
+AWS Access Key ID : ***************
+AWS Secret Access Key : ****************************
+Default region name [None]: us-east-3
+Default output format [None]:
+
+
+Modify a variable "bucket _name"in  variables.tf :
+
+```
+variable "bucket_name" {
+  description = "Name of the S3 bucket"
+  type        = string
+  default     = "data-engineering-terraf-redempteur-20082026"
+}
+```
+
+after I upload on my S3 Bucket 
+
+`
+/terraf-homwk# aws s3 cp ~/datasource/green_tripdata_2025-11.parquet s3://data-engineering-terraf-redempteur-20082026/
+`
