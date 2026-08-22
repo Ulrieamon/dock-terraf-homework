@@ -336,3 +336,7 @@ after I upload on my S3 Bucket
 `
 /terraf-homwk# aws s3 cp ~/datasource/green_tripdata_2025-11.parquet s3://data-engineering-terraf-redempteur-20082026/
 `
+
+**Destroy Terraform**
+
+`terraform destroy`
